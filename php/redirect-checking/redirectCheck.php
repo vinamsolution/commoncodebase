@@ -74,9 +74,10 @@ function get_final_url($url){
     }
 }
 
-
-$rez = get_all_redirects('http://119.9.79.111/~cliente/link.php?M=1371178&N=250&L=488&F=H');
-print_r($rez);
+if(isset($_POST['url']) && $_POST['url']!=''){
+    $rez = get_all_redirects($_POST['url']);
+    print_r($rez);
+}
 ?>
 <html>
 <form action="" method="post">
