@@ -77,3 +77,11 @@ function get_final_url($url){
 
 $rez = get_all_redirects('http://119.9.79.111/~cliente/link.php?M=1371178&N=250&L=488&F=H');
 print_r($rez);
+?>
+<html>
+<form action="" method="post">
+    Enter the url to trace : <input type="text" name="url" />
+    <input type="submit" value="trace" />
+</form>
+</html>
+
