@@ -76,7 +76,10 @@ function get_final_url($url){
 
 if(isset($_POST['url']) && $_POST['url']!=''){
     $rez = get_all_redirects($_POST['url']);
-    print_r($rez);
+    $i=1;
+    foreach($rez as $value ){
+        echo "Url ".$i++." is ".$value. "<br />";
+    }
 }
 ?>
 <html>
