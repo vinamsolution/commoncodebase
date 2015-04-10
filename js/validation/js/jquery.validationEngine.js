@@ -1003,6 +1003,12 @@
                     switch (rule["rule"]) {
 
                         case "email":
+                             /**
+                             * email validation
+                             * @param {email} 
+                             * validation for domain exist
+                             * need to implement serverside validation
+                             **/
                             if (field.val().toString().trim().length > 0) {
                                 var split = field.val().trim().toString().split('@');
                                 //       var split_count = split.length;
@@ -1024,29 +1030,21 @@
                             break;
 
                         case "url":
-                            //https://userid:password@example.com/ 
-                            if (field.val().trim().length > 0) {
-                                //check it contain protocol and is it contain space before and after-----
-                                var protocol = field.val().substring(0, 8);
-//                { "mkyong.t.t.c", false },      //Tld must at between 2 and 6 long
-//                { "mkyong,com", false }, 	//comma not allowed
-//                { "mkyong", false }, 		//no tld
-//                { "mkyong.123", false },	//digit not allowed in tld
-//                { ".com", false }, 		//must start with [A-Za-z0-9]
-//                { "mkyong.a", false },		//last tld need at least two characters
-//                { "mkyong.com/users", false },	// no tld
-//                { "-mkyong.com", false },	//Cannot begin with a hyphen -
-//                { "mkyong-.com", false },	//Cannot end with a hyphen -
-//                { "sub.-mkyong.com", false },	//Cannot begin with a hyphen -
-//                { "sub.mkyong-.com", false }	//Cannot end with a hyphen -
-//                                                    
+                            /**
+                             * url validation
+                             * allowed protocols are http:// and https://
+                             * protocol only checking currently
+                             * 
+                             */
 
-                                if (protocol == "https://") {  // protocol checkng --------------------
+                            if (field.val().trim().length > 0) {
+                                var protocol = field.val().substring(0, 8);
+                                if (protocol == "https://") {
                                     var domain = field.val().trim().split(protocol);
 
                                 } else {
                                     var protocol = field.val().substring(0, 7);
-                                    if (protocol == "http://") {  //checking protocol --------------
+                                    if (protocol == "http://") {
                                         //taking the full url without protocol -------------------
 
                                     }
@@ -1060,8 +1058,6 @@
                                     }
 
                                 }
-
-
                                 return options.allrules[customRule].alertText;
                             }
                             break;
@@ -1093,20 +1089,6 @@
                     }
 
 
-//                            
-//                                          var inputString = field.val().toString().split("");
-//                                      //    alert(inputString[0].match(pattern));
-//                                          var invalid = "";
-//                                          for(var i = 0 ; i<inputString.length ; i++){
-//                                              var check = inputString[i].match(pattern);
-//                                                   if(check==null){
-//                                                     //  alert(check);
-//                                                       invalid = invalid+ inputString[i];    
-//                                                   }
-//                                          }
-//                                          var msg = "'" +invalid + "'"  + options.allrules[customRule].alertText ;
-//                                          return msg;
-
                 }
 
 
@@ -1120,44 +1102,55 @@
                     return;
                 }
 
-                if (!fn(field, rules, i, options)) {
-                    var date = field.val().trim();
-                    if (date.length > 0) {
 
-                        var dateSplit = date.split("/");
-                        if (dateSplit.length == 3) {
-                            var year = dateSplit[0];
-                            var month = dateSplit[1];
-                            var day = dateSplit[2];
-                            if (year.length == 4 && (year.substr(0, 1) != 0)) {
-                                if (month.length == 2) {
-                                    if (month > 12)
-                                        return "Please Enter Month between 01 to 12";
-                                    if (day.length == 2) {
-                                        if (day > 31)
-                                            return "Please Enter day between 01 to 31";
+                /**
+                 * getting the date invalid cases from the user input
+                 * date in yyyy/mm/dd format
+                 * date before current year +100 and after current year - 100 are invalid 
+                 * @param date
+                 * 
+                 */
+                
+                var date = field.val().trim();
+                var monthsArray = ["31", "28", "31", "30", "31", "30","31", "31", "30", "31", "30", "31"];
+                if (date.length > 0) {
+                    var dateSplit = date.split("/");
+                    if (dateSplit[0] < (new Date().getFullYear() + 100) && dateSplit[0] > new Date().getFullYear() - 100) {
+                        if (!fn(field, rules, i, options)) {
+                            if (dateSplit.length == 3) {
+                                var year = dateSplit[0];
+                                var month = dateSplit[1];
+                                var day = dateSplit[2];
+                                if (year.length == 4 && (year.substr(0, 1) != 0)) {
+                                    if (month.length == 2) {
+                                        if (month > 12)
+                                            return "Please Enter Month between 01 to 12";
+                                        if (day.length == 2) {
+                                            if (day > monthsArray[(parseInt(month,10))-1])
+                                                return "Please Enter day between 01 to " + monthsArray[(parseInt(month,10))-1];
+                                        } else {
+                                            return day + " is not valid day ! eg: 2015/01/01";
+                                        }
+
                                     } else {
-                                        return day + " is not valid day ";
+                                        return month + " is not valid month ! eg: 2015/01/01";
                                     }
-
+ 
                                 } else {
-                                    return month + " is not valid month";
+                                    return year + " is not valid year";
                                 }
 
-                            } else {
-                                return year + " is not valid year";
                             }
+                            //msg = year +" is not a valid year" ;
+                            return options.allrules[customRule].alertText;
 
-                        }
-                        //msg = year +" is not a valid year" ;
-                        return options.allrules[customRule].alertText;
+                        }  
+                    } else {
+                        return dateSplit[0] + " is not valid year";
                     }
-
-
-
                 }
             } else {
-                alert("jqv:custom type not allowed " + customRule);
+                alert("jqv:custom type not allowedss " + customRule);
                 return;
             }
         },
